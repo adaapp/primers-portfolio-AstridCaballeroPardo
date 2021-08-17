@@ -1,3 +1,51 @@
+
+/* 
+  Helper functions
+*/
+std::string userInput(std::string prompt1, int iter = -1, std::string prompt2 = " ") {
+  std::string reply = "";
+  if (prompt2 != " " && iter > 0) {
+    std::cout << prompt1 << iter << prompt2; 
+  } 
+  else if((prompt2 != " " && iter == -1)) {
+    std::cout << prompt1 << prompt2; 
+  }
+  else if((prompt2 == " " && iter > 0)){
+    std::cout << prompt1 << iter; 
+  }
+  else {
+    std::cout << prompt1; 
+  }   
+  std::getline(std::cin, reply);  
+  return reply;
+}
+
+bool isNumber(std::string str) {
+  bool state = true;
+  //pattern to check if input string matches numbers
+  std::regex regex_pattern(R"([-]?((\d+(\.\d+)?)|(\d+\.)|(\.\d+))(e[-+]?\d+)?*$)");
+  if (!std::regex_match(str,regex_pattern)) {
+    state = false;
+  }  
+  return state;
+}
+
+float stringToFloat(std::string str, float deflt = -1) {
+  float v = deflt;
+  if (isNumber(str)) {
+    v = stof(str);
+  }  
+  return v;
+}
+
+int stringToInt(std::string str, int deflt = -1) {
+  int v = deflt;
+  if (isNumber(str)) {
+    v = stoi(str);
+  }    
+  return v;
+}
+
 /*
   functions used by fahrenheitCentigradeConversion()
 */
@@ -23,34 +71,6 @@ float ftok(float f) {
 
 float ktof(float k) {
   return ((k * 9 / 5) - 459.67); //Centigrade to Fahrenheit.  
-}
-
-//helper function
-std::string userInput(std::string prompt) {
-  std::string reply = "";
-  std::cout << prompt;  
-  std::getline(std::cin, reply);
-  return reply;
-}
-
-//helper function
-bool isNumber(std::string str) {
-  bool state = true;
-  //pattern to check if input string matches numbers
-  std::regex regex_pattern(R"([-]?((\d+(\.\d+)?)|(\d+\.)|(\.\d+))(e[-+]?\d+)?*$)");
-  if (!std::regex_match(str,regex_pattern)) {
-    state = false;
-  }  
-  return state;
-}
-
-//helper function
-float stringToFloat(std::string str, float deflt = -1) {
-  float v = deflt;
-  if (isNumber(str)) {
-    v = stof(str);
-  }  
-  return v;
 }
 
 void fahrenheitCentigradeConversion(void) {
@@ -114,43 +134,50 @@ void fahrenheitCentigradeConversion(void) {
 */
 
 //Function that calculates the cost of a number of same items
-float costItems(int numberItems, float valueItem) {
-  return numberItems * valueItem;
+float costItems(int numberItems, float valueItem, float subtotal) {
+  return (numberItems * valueItem) + subtotal;
 }
 
 //Function that calculates the tax based on the subtotal
-float taxCal(float subtotal) {
-  const float tax = 5.5;
+float taxCal(float subtotal, float tax) {  
   return (subtotal * tax) / 100;
 }
 
 void selfServiceCheckout(void) {
-	bool buying = true;
-  int i = 1;
-  int numberItems = 0;
+	int i = 1;
+  int numberItems = 1;
   float valueItem = 0.0;
   float subtotal = 0.0;
+  std::string tempStr = "";
+  const float tax = 5.5;
 
-  while (buying){
-    std::cout << "Please enter a quantity for item "<< i << "(or 0 to finish): \n";
-    std::cin >> numberItems;
+  while (numberItems > 0){
+    do {
+      tempStr = userInput("Please enter a quantity for item ", i, "(or 0 to finish): \n");
+    } while (!isNumber(tempStr) || (tempStr.find('.') != std::string::npos));
+
+    numberItems = stringToInt(tempStr);    
 
     if (numberItems == 0) {
       std::cout << "Thank you.\n\n";
-      std::cout << "Subtotal: £" << subtotal << "\n";    buying = false;
+      std::cout << "Subtotal: £" << subtotal << "\n";    
     }
     else {
-      std::cout << "Please enter item " << i << "’s cost: ";
-      std::cin >> valueItem;
-      subtotal += costItems(numberItems, valueItem);
+      do {
+        tempStr = userInput("Please enter item ", i, "’s cost: ");
+      } while (!isNumber(tempStr));
+
+      valueItem = stringToFloat(tempStr);     
+      subtotal = costItems(numberItems, valueItem, subtotal);
       i++;
       std::cout << "\n\n";
     }
   }
   //TODO revisit lines with std::cout.precision()
   std::cout.precision(2);
-  std::cout << "Shopping Tax: £" << taxCal(subtotal) << "\n\n";
+  std::cout << "Shopping Tax: £" << taxCal(subtotal, tax) << "\n\n";
   std::cout.precision(3);
-  std::cout << "Total: £" << taxCal(subtotal) + subtotal << "\n";
+  std::cout << "Total: £" << taxCal(subtotal, tax) + subtotal << "\n";
+	
 }
 
