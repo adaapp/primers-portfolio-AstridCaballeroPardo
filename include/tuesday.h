@@ -83,7 +83,6 @@ void passwordComplexityChecker(void) {
   functions used by employeeListRemoval()
 */
 
-
 int findEmpName(std::vector<std::string> &employeeList, std::string nameToDel) {
   int index = -1;
    std::vector<std::string>::iterator iter = std::find(employeeList.begin(), employeeList.end(), nameToDel);
