@@ -77,5 +77,46 @@ void passwordComplexityChecker(void) {
 
 
 void employeeListRemoval(void) {
-	std::cout << " - employeeListRemoval: not yet implemented\n\n";
+	//unsorted vector
+  std::vector<std::string> employeeList;   
+  std::string nameToDel = ""; 
+  int index = 0;
+
+  // //user inputs employees to the list
+  // for (int i = 0; i < 5; i++) {
+  //   employeeList.push_back(userInput("Please enter employee Name: "));    
+  // }
+
+  employeeList.push_back("John Smith");
+  employeeList.push_back("Jaelynn Stuart");
+  employeeList.push_back("Kaley Barajas");
+  employeeList.push_back("Walter Collier");  
+  employeeList.push_back("Cale Myers");
+
+  
+  //display list of employees
+  std::cout << "\nThere are " << employeeList.size() << " employees: \n";
+  for (auto e : employeeList) {
+    std::cout << e << "\n";
+  }
+
+  //Delete name from list
+  nameToDel = userInput("\nPlease enter employee name to be deleted: ");
+
+  //TODO take into account lower case
+
+  std::vector<std::string>::iterator iter = std::find(employeeList.begin(), employeeList.end(), nameToDel);
+
+  if (iter != employeeList.end()){
+    index = std::distance(employeeList.begin(), iter);    
+    employeeList.erase(employeeList.begin() + index);
+  } else {
+    std::cout << "\nEmployee name doesn't exist.\n";
+  }
+  
+  //display list of employees
+  std::cout << "\nThere are " << employeeList.size() << " employees: \n";
+  for (auto e : employeeList) {
+    std::cout << e << "\n";
+  }
 }
