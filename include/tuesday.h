@@ -16,14 +16,18 @@ unsigned short int getMatchCount(std::string pattern, std::string password) {
 
 unsigned short int getValuePassword(std::string password, unsigned short int numberCount, unsigned short int charCount, unsigned short int specialCharCount, unsigned short int passwordLength) {
   unsigned short int value = 0;
+  const unsigned short int min_char = 4;
+  const unsigned short int min_schar = 1;
+  const unsigned short int min_num = 2;
+  const unsigned short int min_len = 8;
 
-  if (numberCount == passwordLength || charCount == passwordLength || specialCharCount == passwordLength || passwordLength < 4) {
+  if (numberCount == passwordLength || charCount == passwordLength || specialCharCount == passwordLength || passwordLength < min_char) {
     value = 1;
   }
-  else if (passwordLength >= 8  && numberCount >= 2 && charCount >= 4 && specialCharCount == 0 ) {
+  else if (passwordLength >= min_len  && numberCount >= min_num && charCount >= min_char && specialCharCount < min_schar ) {
     value = 3;
   }
-  else if (passwordLength >= 8  && numberCount >= 2 && charCount >= 4 && specialCharCount >= 1 ) {
+  else if (passwordLength >= min_len  && numberCount >= min_num && charCount >= min_char && specialCharCount >= min_schar ) {
     value = 4;
   }
   else {
