@@ -42,7 +42,11 @@ void phoneDirectory(void) {
 
 
 void dataFileParser(void) {
-	const char COMMA = ',';    
+	  const char COMMA = ',';    
+  const int INITIAL = 8;
+  const int LAST = 5;
+  const int SALARY = 7;
+
   int maxLenLast = 0;
   int maxLenSalary = 0;
   std::string line;
@@ -54,8 +58,7 @@ void dataFileParser(void) {
   std::ifstream fileObject;
   fileObject.open("employee.csv");   
 
-  while (fileObject.good()) {
-    getline(fileObject, line);
+  while (getline(fileObject, line)) {
     //store line into sstream for string manipulation
     std::stringstream sso(line);
         
@@ -69,19 +72,64 @@ void dataFileParser(void) {
     //Calculate the max length of third column
     if (maxLenSalary < salary.size()) {
       maxLenSalary = salary.size();
-    }
-    //std::cout << last.size() << "\n";   
+    }      
     
   } 
+ 
+  std::cout << "\n";
+  std::cout << std::left << std::setw(INITIAL) << "Initial" << "\t";
+  if (maxLenLast < LAST) {
+    std::cout << std::left << std::setw(LAST) << "Last"  << "\t";
+  } else {
+    std::cout << std::left << std::setw(maxLenLast + 1) << "Last" << "\t";
+  }
+  if (maxLenSalary < SALARY) {
+    std::cout << std::left << std::setw(SALARY) << "Salary" << "\n";
+  } else {
+    std::cout << std::left << std::setw(maxLenSalary + 1) << "Salary" << "\n";
+  }
 
-  //std::cout << "\nMax len last: "<< maxLenLast << "\n";
-  //std::cout << "\nMax len salary: "<< maxLenSalary << "\n";
 
-  //TODO Ongoing
-  std::cout << "\nInital  \t"<<  "Last      \t" << "Salary  \n";
-  std::cout << std::string(8, '-') << "\t" <<  std::string(maxLenLast, '-') << "\t" << std::string(maxLenSalary, '-') << "\n";
+  std::cout << std::setfill('-') << std::setw(INITIAL) << "-" << "\t";
+  if (maxLenLast < LAST) {
+    std::cout << std::setw(LAST) << "-" << "\t";
+  } else {
+    std::cout << std::setw(maxLenLast + 1) << "-" << "\t";
+  }
+  if (maxLenSalary < SALARY) {
+    std::cout << std::setw(SALARY) << "-" << "\n";
+  } else {
+    std::cout << std::setw(maxLenSalary + 1) << "-" << "\n";
+  }
 
-  //TODO cout the data
-  // manipulate the sstream
-  //print column and count its length to subtract from the max len and add the remaining spaces
+	//Read file again
+  //https://stackoverflow.com/a/28903431
+  fileObject.clear();
+  fileObject.seekg(0);
+  
+
+//loop
+  while (getline(fileObject, line)) {    
+    //store line into sstream for string manipulation
+    std::stringstream sso(line);
+          
+    getline(sso, initial, COMMA); 
+    initial = initial.front();
+    getline(sso, last, COMMA);
+    getline(sso, salary, COMMA);
+
+    std::cout << std::setfill(' ') << std::left << std::setw(INITIAL) << initial + "."  << "\t";
+    if (maxLenLast < LAST) {
+      std::cout << std::left << std::setw(LAST) << last  << "\t";
+    } else {
+      std::cout << std::left << std::setw(maxLenLast + 1) << last << "\t";
+    }
+    if (maxLenSalary < SALARY) {
+      std::cout << std::left << std::setw(SALARY) << salary << "\n";
+    } else {
+      std::cout << std::left << std::setw(maxLenSalary + 1) <<salary << "\n";
+    }
+  }
+  //close file
+  fileObject.close();
 }
