@@ -42,5 +42,46 @@ void phoneDirectory(void) {
 
 
 void dataFileParser(void) {
-	std::cout << " - dataFileParser: not yet implemented\n\n";
+	const char COMMA = ',';    
+  int maxLenLast = 0;
+  int maxLenSalary = 0;
+  std::string line;
+  std::string initial;
+  std::string last;
+  std::string salary;
+
+	//open file
+  std::ifstream fileObject;
+  fileObject.open("employee.csv");   
+
+  while (fileObject.good()) {
+    getline(fileObject, line);
+    //store line into sstream for string manipulation
+    std::stringstream sso(line);
+        
+    getline(sso, initial, COMMA);
+    getline(sso, last, COMMA);
+    //Calculate the max length of second column
+    if (maxLenLast < last.size()) {
+      maxLenLast = last.size();
+    }
+    getline(sso, salary, COMMA);
+    //Calculate the max length of third column
+    if (maxLenSalary < salary.size()) {
+      maxLenSalary = salary.size();
+    }
+    //std::cout << last.size() << "\n";   
+    
+  } 
+
+  //std::cout << "\nMax len last: "<< maxLenLast << "\n";
+  //std::cout << "\nMax len salary: "<< maxLenSalary << "\n";
+
+  //TODO Ongoing
+  std::cout << "\nInital  \t"<<  "Last      \t" << "Salary  \n";
+  std::cout << std::string(8, '-') << "\t" <<  std::string(maxLenLast, '-') << "\t" << std::string(maxLenSalary, '-') << "\n";
+
+  //TODO cout the data
+  // manipulate the sstream
+  //print column and count its length to subtract from the max len and add the remaining spaces
 }
