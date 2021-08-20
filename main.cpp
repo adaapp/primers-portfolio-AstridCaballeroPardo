@@ -18,6 +18,7 @@
 #include "include/thursday.h"
 #include "include/friday.h"
 
+
 //function declarations:
 //tell the compiler about the function; required if function isn't compiled prior to reference
 void menu(void);
