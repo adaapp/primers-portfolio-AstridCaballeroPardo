@@ -1,6 +1,3 @@
-//Global variables to be used in detachFunction()
-int TIME1 = 5;
-int TIME2 = 10;
 
 void sleepTimer(int seconds = 10) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(seconds * 1000));	

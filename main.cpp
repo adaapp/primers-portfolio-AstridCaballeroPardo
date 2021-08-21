@@ -12,6 +12,11 @@
 #include <thread>
 #include <math.h>
 
+
+//Global variables to be used in detachFunction()
+#define TIME1 5
+#define TIME2 10
+
 // create a global variable for Pi to be udes by areaOf()
 # define M_PIl          3.141592653589793238462643383279502884L /* pi */
 
