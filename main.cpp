@@ -10,6 +10,10 @@
 #include <iomanip>
 #include <chrono>
 #include <thread>
+#include <math.h>
+
+// create a global variable for Pi to be udes by areaOf()
+# define M_PIl          3.141592653589793238462643383279502884L /* pi */
 
 //include default source files for daily primer challenges
 #include "include/monday.h"

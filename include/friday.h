@@ -168,6 +168,132 @@ void carClass(void) {
 }
 
 
+/*
+  code that feeds areaOf()
+*/
+
+class shape {
+  private:
+    std::string shapeName;
+    float side = 0;
+    float radious = 0;    
+    float height = 0;
+    float base = 0;
+
+  public:
+    //constructor
+    shape(std::string shapeName, float a) {
+      set_shape(shapeName);
+
+      if (get_shape() == "Circle") {        
+        set_radious(a);
+      }
+      
+      else if (get_shape() == "Square") {        
+        set_side(a);
+      }
+    }
+
+    //overloading the constructor
+    shape(std::string shapeName, float a, float b){
+      set_shape(shapeName);
+
+      if (get_shape() == "Rectangle" || get_shape() == "Triangle") {        
+        set_side(a);
+        set_height(b);
+      }
+    }
+
+    //overloading the constructor
+    shape(std::string shapeName, float a, float b, float c){
+      set_shape(shapeName);
+
+      if (get_shape() == "Trapezoid") { 
+        set_base(a);             
+        set_height(b);
+        set_side(c);        
+      }
+    }
+
+    //destructor
+    ~shape() { }
+
+    //Setter method
+    void set_shape(std::string shape) {
+      shapeName = shape;    
+    }
+
+    void set_radious(float a) {
+      radious = a;    
+    }
+
+    void set_side(float a) {
+      side = a;    
+    }
+
+    void set_height(float b) {
+      height = b;    
+    }
+
+    void set_base(float c) {
+      base = c;    
+    }
+
+    //Getter method
+    std::string get_shape(void){
+      return shapeName;
+    }
+
+    float get_radious(void){
+      return radious;
+    }
+
+    float get_side(void){
+      return side;
+    }
+
+    float get_height(void){
+      return height;
+    }
+
+    float get_base(void){
+      return base;
+    }
+
+    //Other methods
+    float size() {
+      if (get_shape() == "Circle") {
+        return  M_PIl * std::pow(get_radious(), 2.0);
+      }
+      else if (get_shape() == "Square") {
+        return std::pow(get_side(), 2.0);
+      }
+      else if (get_shape() == "Rectangle") {
+        return get_side() * get_height();
+      }
+      else if (get_shape() == "Triangle") {
+        return (get_side() * get_height()) / 2.0;
+      }
+      else if (get_shape() == "Trapezoid") {
+        return ((get_base() + get_side()) / 2) * get_height();
+      }
+      return 0;
+    }
+};
+
 void areaOf(void) {
-		std::cout << " - areaOf: not yet implemented\n\n";
+	shape myCircle = shape("Circle", 4.5);	
+  std::cout << "\nArea of " << myCircle.get_shape() << " (r = "<< myCircle.get_radious() << "): "<< myCircle.size() << "\n";
+
+  shape mySquare = shape("Square", 6.1);
+  std::cout << "Area of " << mySquare.get_shape() << " (a = "<< mySquare.get_side() << "): "<< mySquare.size() << "\n";
+
+  shape myRectangle = shape("Rectangle", 4, 5.9);
+  std::cout << "Area of " << myRectangle.get_shape() << " (w = "<< myRectangle.get_side() << ", l = " << myRectangle.get_height() << "): "<< myRectangle.size() << "\n";
+
+  shape myTriangle = shape("Triangle", 8, 12);
+  std::cout << "Area of " << myTriangle.get_shape() << " (b = "<< myTriangle.get_side() << ", h = " << myTriangle.get_height() << "): "<< myTriangle.size() << "\n";
+
+  shape myTrapezoid = shape("Trapezoid", 14, 7.5, 6);
+  std::cout << "Area of " << myTrapezoid.get_shape() << " (b = "<< myTrapezoid.get_base() << ", h = " << myTrapezoid.get_height() << ", a = " << myTrapezoid.get_side() << "): "<< myTrapezoid.size() << "\n";
 }
