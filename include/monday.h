@@ -2,20 +2,9 @@
 /* 
   Helper functions
 */
-std::string userInput(std::string prompt1, int iter = -1, std::string prompt2 = " ") {
-  std::string reply = "";
-  if (prompt2 != " " && iter > 0) {
-    std::cout << prompt1 << iter << prompt2; 
-  } 
-  else if((prompt2 != " " && iter == -1)) {
-    std::cout << prompt1 << prompt2; 
-  }
-  else if((prompt2 == " " && iter > 0)){
-    std::cout << prompt1 << iter; 
-  }
-  else {
-    std::cout << prompt1; 
-  }   
+std::string userInput(std::string prompt1) {
+  std::string reply = "";  
+  std::cout << prompt1;   
   std::getline(std::cin, reply);  
   return reply;
 }
@@ -31,19 +20,59 @@ bool isNumber(std::string str) {
 }
 
 float stringToFloat(std::string str, float deflt = -1) {
-  float v = deflt;
+  float value = deflt;
   if (isNumber(str)) {
-    v = stof(str);
+    value = stof(str);
   }  
-  return v;
+  return value;
 }
 
 int stringToInt(std::string str, int deflt = -1) {
-  int v = deflt;
+  int value = deflt;
   if (isNumber(str)) {
-    v = stoi(str);
+    value = stoi(str);
   }    
-  return v;
+  return value;
+}
+
+int floatLength(float num) {
+  std::string str = std::to_string(num);
+  return str.size();
+}
+
+float roundTwoDecimal(float num) {  
+  int sizeStr = floatLength(num);
+  char arrayChar[sizeStr];
+
+  sprintf(arrayChar, "%.2f", num);
+  sscanf(arrayChar, "%f", &num);
+
+  return num;
+}
+
+float readFloat(std::string prompt) {
+  std::string input;  
+  do {    
+    input = userInput(prompt);
+  } while (!isNumber(input));
+  return stringToFloat(input);;
+}
+
+int readInteger(std::string prompt) {
+  std::string input;
+  do {   
+    input = userInput(prompt);
+  } while (!isNumber(input) || (input.find('.') != std::string::npos));
+  return stringToInt(input);
+}
+
+//helper function
+char readChar(std::string prompt) {
+  std::string input;  
+  do {       
+    input = userInput(prompt);
+  } while (input.size() != 1);
+  return input[0];
 }
 
 /*
@@ -76,48 +105,46 @@ float ktof(float k) {
 void fahrenheitCentigradeConversion(void) {
 	std::string temp;
   std::string label;
+  std::string msg = "";
   std::string c = "";
   char choice;
-  float ot = 0.0;
-  float t = 0.0;
+  float originalTemp = 0.0;
+  float convertedTemp = 0.0;
 
-  //ot = stringToFloat(userInput("\nPlease enter the starting temperature: "));
-  do {
-    ot = stringToFloat(userInput("\nPlease enter the starting temperature: "));
-  } while (ot == -1);
+  msg = "\nPlease enter the starting temperature: ";
+  originalTemp = readFloat(msg);
   
-  c = userInput("\nPress ‘C’ to convert from Fahrenheit to Centigrade.\nPress ‘F’ to convert from Centigrade to Fahrenheit.\nPress ‘K’ to convert from Centigrade to Kelvin.\nPress ‘G’ to convert from Kelvin to Centigrade.\nPress ‘D’ to convert from Fahrenheit to Kelvin.\nPress ‘H’ to convert from Kelvin to Fahrenheit.\n\nYour choice: ");
- 
-  choice = c[0];
+  msg = "\nPress ‘C’ to convert from Fahrenheit to Centigrade.\nPress ‘F’ to convert from Centigrade to Fahrenheit.\nPress ‘K’ to convert from Centigrade to Kelvin.\nPress ‘G’ to convert from Kelvin to Centigrade.\nPress ‘D’ to convert from Fahrenheit to Kelvin.\nPress ‘H’ to convert from Kelvin to Fahrenheit.\n\nYour choice: ";
+  choice = readChar(msg);
 
   switch(tolower(choice)) {
     case 'c': 
-      t = ftoc(ot);
+      convertedTemp = ftoc(originalTemp);
       label = "Fahrenheit";
       break;
     
     case 'f':
-      t = ctof(ot);
+      convertedTemp = ctof(originalTemp);
       label = "Centigrade";
       break;
     
     case 'k':
-      t = ctok(ot);
+      convertedTemp = ctok(originalTemp);
       label = "Centigrade";
       break;
 
     case 'g':
-      t = ktoc(ot);
+      convertedTemp = ktoc(originalTemp);
       label = "Kelvin";
       break;
 
     case 'd':
-      t = ftok(ot);
+      convertedTemp = ftok(originalTemp);
       label = "Fahrenheit";
       break;
 
     case 'h':
-      t = ktof(ot);
+      convertedTemp = ktof(originalTemp);
       label = "Kelvin";
       break;
 
@@ -126,7 +153,7 @@ void fahrenheitCentigradeConversion(void) {
       return;
   }  
 
-  std::cout << ot << " degrees " << label << " is = " << t << "\n";
+  std::cout << originalTemp << " degrees " << label << " is " << convertedTemp << "\n";
 }
 
 /*
@@ -146,38 +173,33 @@ float taxCal(float subtotal, float tax) {
 void selfServiceCheckout(void) {
 	int i = 1;
   int numberItems = 1;
+  std::string msg = "";
   float valueItem = 0.0;
   float subtotal = 0.0;
-  std::string tempStr = "";
+  float subTax = 0.0;
   const float tax = 5.5;
 
   while (numberItems > 0){
-    do {
-      tempStr = userInput("Please enter a quantity for item ", i, "(or 0 to finish): \n");
-    } while (!isNumber(tempStr) || (tempStr.find('.') != std::string::npos));
-
-    numberItems = stringToInt(tempStr);    
+    msg = msg = "Please enter a quantity for item " + std::to_string(i) + " (or 0 to finish): ";
+    numberItems = readInteger(msg);    
 
     if (numberItems == 0) {
-      std::cout << "Thank you.\n\n";
-      std::cout << "Subtotal: £" << subtotal << "\n";    
+      break;   
     }
-    else {
-      do {
-        tempStr = userInput("Please enter item ", i, "’s cost: ");
-      } while (!isNumber(tempStr));
-
-      valueItem = stringToFloat(tempStr);     
+    else {      
+      msg = "Please enter item " + std::to_string(i) + "’s cost: ";
+      valueItem = readFloat(msg);     
       subtotal = costItems(numberItems, valueItem, subtotal);
       i++;
       std::cout << "\n\n";
     }
   }
-  //TODO revisit lines with std::cout.precision()
-  std::cout.precision(2);
-  std::cout << "Shopping Tax: £" << taxCal(subtotal, tax) << "\n\n";
-  std::cout.precision(3);
-  std::cout << "Total: £" << taxCal(subtotal, tax) + subtotal << "\n";
-	
+
+  subTax = taxCal(subtotal, tax);
+
+  std::cout << "Thank you.\n\n"; 
+  std::cout << "Subtotal: £" << roundTwoDecimal(subtotal) << "\n";  
+  std::cout << "Shopping Tax: £" << roundTwoDecimal(subTax) << "\n\n";  
+  std::cout << "Total: £" << roundTwoDecimal(subTax + subtotal) << "\n";	
 }
 
