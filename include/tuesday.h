@@ -2,18 +2,6 @@
   functions used by passwordComplexityChecker()
 */
 
-unsigned short int getMatchCount(std::string pattern, std::string password) {
-  
-  std::regex  const expression(pattern);
-  std::string const text(password);
-
-  std::ptrdiff_t const match_count(std::distance(
-  std::sregex_iterator(text.begin(), text.end(), expression),
-  std::sregex_iterator()));  
-
-  return match_count;
-}
-
 unsigned short int getValuePassword(std::string password, unsigned short int numberCount, unsigned short int charCount, unsigned short int specialCharCount, unsigned short int passwordLength) {
   unsigned short int value = 0;
   const unsigned short int min_char = 4;
@@ -37,55 +25,71 @@ unsigned short int getValuePassword(std::string password, unsigned short int num
   return value;
 }
 void passwordComplexityChecker(void) {
-  std::string password = "";
-    unsigned short int  passValue = 0;
+  std::string password = "";  
+  std::string msg = "";
+  unsigned short int  passValue = 0;
 
-    //General instructions
-    std::cout << "\nFor a very strong password consider:\n - At least 8 characters\n - at least 2 numbers\n - at least 4 letters\n - At least 1 special character\n\n";
+  //General instructions
+  std::cout << "\nFor a very strong password consider:\n - At least 8 characters\n - at least 2 numbers\n - at least 4 letters\n - At least 1 special character\n\n";
 
-    //get user input
-    do {
-      password = userInput("Create a password: ");
-    } while (password.length() == 0);
-    
+  //get user input    
+  msg = "Create a password: ";  
+  password = readString(msg);  
 
   // calculate the count of each type of element of the string
-    unsigned short int numberCount = getMatchCount(R"(\d)", password);
-    unsigned short int charCount = getMatchCount(R"([a-zA-Z])", password);
-    unsigned short int specialCharCount = getMatchCount(R"([^a-zA-Z\d])", password);
+  unsigned short int numberCount = getMatchCount(R"(\d)", password);
+  unsigned short int charCount = getMatchCount(R"([a-zA-Z])", password);
+  unsigned short int specialCharCount = getMatchCount(R"([^a-zA-Z\d])", password);
 
-    //Calculate the length of the string
-    unsigned short int passwordLength = password.length();
+  //Calculate the length of the string
+  unsigned short int passwordLength = password.length();
 
-    //assign a value to the stored password
-    passValue = getValuePassword(password, numberCount, charCount, specialCharCount, passwordLength);    
+  //assign a value to the stored password
+  passValue = getValuePassword(password, numberCount, charCount, specialCharCount, passwordLength);   
 
-    switch (passValue) {
-      case 1:
-        std::cout << "The password ‘" << password <<"’ is Weak\n\n";
-        break;
+  //Display result
+  msg = "The password ‘" + password  + "’ is "; 
 
-      case 2:
-        std::cout << "The password ‘" << password <<"’ is Moderate\n\n";
-        break;
+  switch (passValue) {
+    case 1:
+      std::cout << msg << "Weak\n\n";
+      break;
 
-      case 3:
-        std::cout << "The password ‘" << password <<"’ is Strong\n\n";
-        break;
+    case 2:
+      std::cout << msg << "Moderate\n\n";
+      break;
 
-      case 4:
-        std::cout << "The password ‘" << password <<"’ is Very Strong\n\n";
-        break;
-    }
+    case 3:
+      std::cout << msg << "Strong\n\n";
+      break;
+
+    case 4:
+      std::cout << msg << "Very Strong\n\n";
+      break;
   }
+}
 
 /*
   functions used by employeeListRemoval()
 */
 
+//accessing the vector by reference '&' to be able to acces it and manipulate it
 int findEmpName(std::vector<std::string> &employeeList, std::string nameToDel) {
   int index = -1;
-   std::vector<std::string>::iterator iter = std::find(employeeList.begin(), employeeList.end(), nameToDel);
+  std::vector<std::string>::iterator iter = std::find_if(employeeList.begin(), employeeList.end(),
+  //[&] capture clause for lambda expressions, as '&' is not accompanied by a specific variable it means that the lambda will get all the variables by their reference, It could have been used the value instead of the reference with [=] instead of [&]. By reference only takes the address, in this case the address of the beginning of the string so it takes less memory than passing the value.
+  [&](std::string &str) { 
+      // if the size of the Nth element of the vector is not the same than the size of the string inputed by the user then we can easily know they don't match
+      if ( str.size() != nameToDel.size() )
+        return false;
+    
+    // if the size of the strings are the same then iterate over their characters and compare
+      for (size_t i = 0; i < str.size(); ++i)
+        if (std::tolower(str[i]) == std::tolower(nameToDel[i]))
+          return true;
+      return false;
+    }
+  );
 
   if (iter != employeeList.end()){
     index = std::distance(employeeList.begin(), iter);    
@@ -94,10 +98,20 @@ int findEmpName(std::vector<std::string> &employeeList, std::string nameToDel) {
   return index;
 }
 
+//accessing the vector by reference '&' to be able to acces it and manipulate it
+void deleteEmployee(int index, std::vector<std::string> &myVector) {
+   if (index >= 0) {
+    myVector.erase(myVector.begin() + index);
+  } else {
+    std::cout << "\nEmployee name doesn't exist.\n";
+  }
+}
+
 void employeeListRemoval(void) {
 	//unsorted vector
   std::vector<std::string> employeeList;   
   std::string nameToDel = ""; 
+  std::string msg = ""; 
   int index = 0;
 
   employeeList.push_back("John Smith");
@@ -108,26 +122,23 @@ void employeeListRemoval(void) {
 
   
   //display list of employees
-  std::cout << "\nThere are " << employeeList.size() << " employees: \n";
-  for (auto e : employeeList) {
-    std::cout << e << "\n";
-  }
+  msg = "\nThere are " + std::to_string(employeeList.size()) + " employees: \n";
+  std::cout << msg;
+  printStrElementsVector(employeeList);
 
   //Delete name from list
-  nameToDel = userInput("\nPlease enter employee name to be deleted: ");
+  msg = "\nPlease enter employee name to be deleted: ";
+  nameToDel = readName(msg);
+  // nameToDel = userInput("\nPlease enter employee name to be deleted: ");
 
   //find if inputed name matches an element of the vector, return positive integer if found (represents the index of the element inside the vector)
   index = findEmpName(employeeList, nameToDel);
 
-  if (index >= 0) {
-    employeeList.erase(employeeList.begin() + index);
-  } else {
-    std::cout << "\nEmployee name doesn't exist.\n";
-  }
+  //delete employee if there is a match
+  deleteEmployee(index, employeeList);
   
   //display list of employees
-  std::cout << "\nThere are " << employeeList.size() << " employees: \n";
-  for (auto e : employeeList) {
-    std::cout << e << "\n";
-  }
+  msg = "\nThere are " + std::to_string(employeeList.size()) + " employees: \n";
+  std::cout << msg;
+  printStrElementsVector(employeeList);
 }

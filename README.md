@@ -50,7 +50,7 @@ The other challenge was to spot parts of the code that can be taken out and beco
 ### Primer 2 - Self-service Checkout
 This challenge requires us to create a selfservice checkout program where the user inputs the quantity of a specific item and its cost (this can be done 0 or many times). The result is the calculation of the total purchase including tax.
 
-As part of the initial design two functions that implemented the accumulative calculation of the cost of the items and the calculation of the tax.
+As part of the initial design two functions that implemented the accumulative calculation of the cost of the items and the calculation of the tax were needed.
 
 To help complete this challenge I needed to break the overall problem down into the following main tasks: 
 * Get data from the user
@@ -68,16 +68,59 @@ This primer brought a similar challenge that I faced on primer1, I used 'std::co
 As I had already implemented userInput() I was able to reuse that function to get the input for the user with few lines of code. I was also able to reuse readFloat() making easy the input validation.
 
 ### Primer 3 - passwordComplexityChecker
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac elit in magna porttitor convallis. Ut eu justo rutrum, luctus lorem a, pretium quam. Sed ut commodo lectus. Vestibulum ut ligula lorem. Nulla mattis varius ex ac luctus. Aenean nec laoreet enim. Sed lorem erat, vestibulum ut faucibus vel, pellentesque nec felis. Vivamus metus tellus, pretium eu sodales interdum, fringilla ut mauris. ....
+This challenge requires us to check the complexity of a password entered by the user when prompted. 
+
+As part of the initial design two functions were needed: one that implements the counts of numbers, chars and special chars; the second function implements the calculation of a value to determine the complexity of the password (1, 2, 3, 4).
+
+To help complete this challenge I needed to break the overall problem down into the following main tasks: 
+* Get data from the user
+* Verify the data is in a suitable format
+* Create the method to implement the counts (numbers, chars and special chars)
+* Create a method to calculate the complexity value of the password (1, 2, 3, 4)
+* Display the result
+
 
 #### Reflection (as well as issues, challenges & resolutions)
-The biggest issue was related to testing the areas my solution failed, originally, I tested to see if it worked - however, it wasn’t until I tried to break it that I found some of the more serious issues with my design and implementation.  For example, ...
+To solve the primer I started by getting the user's input and testing it. I decided to add code to display a text before asking the user input to guide the user in the creation of a strong password. Then I implemented the functions to calculate the counts using regex ('getMatchCount')and test it. After that, I implemented the code to calculate the complexity value ('getValuePassword') and test it. lastly, I put all together and displayed the result.
+
+This time using regex was straightforward as I had already practiced using them when creating the helper functions for primer1 and primer2. When implementing 'getValuePassword' function I used if statements, the first value I assigned was 1, then I wanted to implement the value for 2 but I realised than in order to get that one done properly I needed to implement values 3 and 4 first, so I did that and I implemented value 2 last.
+
+I was also able to use the userInput() function and I created an extra helper function called readString() following similar logic than readInteger() and readFloat(). The idea of these 'readXXX' functions are to implement a do/while loop so the program can validate the input and will continue only if is correct, because of this I didn't include in the 'switch' statement a 'default case' where the input was invalid.
+
+I also, improve the display of text by creating a variable 'msg' that held the common part of the final display, making the 'switch' statement shorter and in the case the text needs to be edited it will need to be changed only once.
+
+In primer3 I decided to use variables of type 'unsigned short int' as in the lecture was mentioned that it requires less memory than a type 'int' and as my variables were tighted to the lenght of the password which is not going to be as long as the max value that an 'int' can hold, I thought here was a good place to use 'unsigned short int'.
 
 ### Primer 4 - employeeListRemoval
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac elit in magna porttitor convallis. Ut eu justo rutrum, luctus lorem a, pretium quam. Sed ut commodo lectus. Vestibulum ut ligula lorem. Nulla mattis varius ex ac luctus. Aenean nec laoreet enim. Sed lorem erat, vestibulum ut faucibus vel, pellentesque nec felis. Vivamus metus tellus, pretium eu sodales interdum, fringilla ut mauris. ....
+This challenge requires us to store employees' names in a container, display the contents of the container, ask the user for a name that she/he wishes to delete from the container and delete it from it if exists in the container. 
+
+As part of the initial design one function was needed: a function the implements the search of the name of an employee in the container and returns the index of the name if it matches the one entered by the user.
+
+To help complete this challenge I needed to break the overall problem down into the following main tasks: 
+* Create container
+* Store data
+* Get data from the user
+* Verify the data is in a suitable format
+* Create the method to implement the seacrh of the name
+* Delete a name if there is a match
+* Display the result
+
 
 #### Reflection (as well as issues, challenges & resolutions)
-The biggest issue was related to testing the areas my solution failed, originally, I tested to see if it worked - however, it wasn’t until I tried to break it that I found some of the more serious issues with my design and implementation.  For example, ...
+To solve the primer I started by deciding which container to use to store the names. Even though the requirements for the primer suggested to use array, I found using vector more flexible, mainly because the size is not fixed like in the array's case. Then I appended the values to the vector and test it. Then I worked on displaying the list of employees and get input from the user and test it. Lastly, I implemented a physical delete of the name from the vector. Doing a logical deletion as it is usually the case when working with databases would have included and extra value per line in the csv to represent wheter it was deleted or not, like 0(not deleted) or 1(deleted). The way I would have try to manage that data maybe would have been creating a structure to hold both values (name and deletion) per employee (or csv line) and create a container that stores that type of structure. The advantage of the structure is that allows to use '.' to access the attributes of each employee.
+
+One of the biggest challenges I had was to make the matching case insentive which is part of the function 'findEmpName'. I originally had used 'std::find' but this solution was not robust enough as it was case sensitive. Researching online I found that I a way to solve it is using 'std::find_if' and using lambdas https://stackoverflow.com/a/36494902. So I did more research in order to understand the structure of the lambda function and why it was using '[]', I am familiar with pointers as I have some experience with C, but '[]' was new to me. 
+
+[&] is the capture clause for lambda expressions, since '&' is not accompanied by a specific variable it means that the lambda will get all the variables by their reference, It could have been used the value instead of the reference with [=] instead of [&]. Once I understood the solution then I felt comfortable using it.
+
+
+'By reference' only takes the address, in this particular case is the address of the beginning of a 'string' so it takes less memory than passing the value. Strings are an array of 'char' and the way the computer knows the collection is a 'string' is because after the last char it adds '\00000000' this is invisible to the user but all strings are in fact 1 space longer than the actual text and because of this the computer can figure out when the string finishes. (I learnt this when I took the CS50 MOOC class in March 2020, this is the link for the same content for 2021 https://cs50.harvard.edu/x/2021/notes/4/#strings).
+
+![image info](./screenshots/Primer4_StringUnderTheHood.png)
+
+The refactoring process also included to take the code to delete the name form the list and make a function to implement it, which I called 'deleteEmployee'. This function also get the vector 'By reference' in order to access the vector and manipulate it, without the '&' the function will implement the actions on a copy of the vector not the actual vector. This is not the case of arrays, when we pass them to a function as a parameter by default it passes the pointer of the array.
+
+In this primer I was able to reuse the 'getMatchCount' function which I originally created for primer3.
 
 ### Primer 5 - phoneDirectory
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac elit in magna porttitor convallis. Ut eu justo rutrum, luctus lorem a, pretium quam. Sed ut commodo lectus. Vestibulum ut ligula lorem. Nulla mattis varius ex ac luctus. Aenean nec laoreet enim. Sed lorem erat, vestibulum ut faucibus vel, pellentesque nec felis. Vivamus metus tellus, pretium eu sodales interdum, fringilla ut mauris. ....
