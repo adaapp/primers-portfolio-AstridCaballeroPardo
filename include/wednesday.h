@@ -118,81 +118,86 @@ void dataFileParser(void) {
   std::ifstream fileObject;
   fileObject.open("employee.csv");   
 
-  // calculate the max lengths of 2nd and 3rd columns
-  while (getline(fileObject, line)) {
-    //store line into sstream for string manipulation
-    std::stringstream sso(line);
-        
-    getline(sso, initial, COMMA);
-    getline(sso, last, COMMA);
-    //Calculate the max length of second column
-    if (maxLenLast < last.size()) {
-      maxLenLast = last.size();
-    }
-    getline(sso, salary, COMMA);
-    //Calculate the max length of third column
-    if (maxLenSalary < salary.size()) {
-      maxLenSalary = salary.size();
-    }      
-    
-  } 
- 
-  //display headers
-  std::cout << "\n";
-  std::cout << std::left << std::setw(INITIAL) << "Initial" << "\t";
-  if (maxLenLast < LAST) {
-    std::cout << std::left << std::setw(LAST) << "Last"  << "\t";
-  } else {
-    std::cout << std::left << std::setw(maxLenLast + 1) << "Last" << "\t";
-  }
-  if (maxLenSalary < SALARY) {
-    std::cout << std::left << std::setw(SALARY) << "Salary" << "\n";
-  } else {
-    std::cout << std::left << std::setw(maxLenSalary + 1) << "Salary" << "\n";
-  }
-
-  //display '-' under headers
-  std::cout << std::setfill('-') << std::setw(INITIAL) << "-" << "\t";
-  if (maxLenLast < LAST) {
-    std::cout << std::setw(LAST) << "-" << "\t";
-  } else {
-    std::cout << std::setw(maxLenLast + 1) << "-" << "\t";
-  }
-  if (maxLenSalary < SALARY) {
-    std::cout << std::setw(SALARY) << "-" << "\n";
-  } else {
-    std::cout << std::setw(maxLenSalary + 1) << "-" << "\n";
-  }
-
-	//Read file again
-  //https://stackoverflow.com/a/28903431
-  fileObject.clear();
-  fileObject.seekg(0);
-  
-
-  //Display each record
-  while (getline(fileObject, line)) {    
-    //store line into sstream for string manipulation
-    std::stringstream sso(line);
+  //check if the file opened succesfully
+  if (!fileObject.fail()) { 
+    // calculate the max lengths of 2nd and 3rd columns
+    while (getline(fileObject, line)) {
+      //store line into sstream for string manipulation
+      std::stringstream sso(line);
           
-    getline(sso, initial, COMMA); 
-    //get first letter of initial
-    initial = initial.front();
-    getline(sso, last, COMMA);
-    getline(sso, salary, COMMA);
-
-    std::cout << std::setfill(' ') << std::left << std::setw(INITIAL) << initial + "."  << "\t";
+      getline(sso, initial, COMMA);
+      getline(sso, last, COMMA);
+      //Calculate the max length of second column
+      if (maxLenLast < last.size()) {
+        maxLenLast = last.size();
+      }
+      getline(sso, salary, COMMA);
+      //Calculate the max length of third column
+      if (maxLenSalary < salary.size()) {
+        maxLenSalary = salary.size();
+      }      
+      
+    } 
+  
+    //display headers
+    std::cout << "\n";
+    std::cout << std::left << std::setw(INITIAL) << "Initial" << "\t";
     if (maxLenLast < LAST) {
-      std::cout << std::left << std::setw(LAST) << last  << "\t";
+      std::cout << std::left << std::setw(LAST) << "Last"  << "\t";
     } else {
-      std::cout << std::left << std::setw(maxLenLast + 1) << last << "\t";
+      std::cout << std::left << std::setw(maxLenLast + 1) << "Last" << "\t";
     }
     if (maxLenSalary < SALARY) {
-      std::cout << std::left << std::setw(SALARY) << salary << "\n";
+      std::cout << std::left << std::setw(SALARY) << "Salary" << "\n";
     } else {
-      std::cout << std::left << std::setw(maxLenSalary + 1) <<salary << "\n";
+      std::cout << std::left << std::setw(maxLenSalary + 1) << "Salary" << "\n";
     }
+
+    //display '-' under headers
+    std::cout << std::setfill('-') << std::setw(INITIAL) << "-" << "\t";
+    if (maxLenLast < LAST) {
+      std::cout << std::setw(LAST) << "-" << "\t";
+    } else {
+      std::cout << std::setw(maxLenLast + 1) << "-" << "\t";
+    }
+    if (maxLenSalary < SALARY) {
+      std::cout << std::setw(SALARY) << "-" << "\n";
+    } else {
+      std::cout << std::setw(maxLenSalary + 1) << "-" << "\n";
+    }
+
+    //Read file again
+    //https://stackoverflow.com/a/28903431
+    fileObject.clear();
+    fileObject.seekg(0);
+    
+
+    //Display each record
+    while (getline(fileObject, line)) {    
+      //store line into sstream for string manipulation
+      std::stringstream sso(line);
+            
+      getline(sso, initial, COMMA); 
+      //get first letter of initial
+      initial = initial.front();
+      getline(sso, last, COMMA);
+      getline(sso, salary, COMMA);
+
+      std::cout << std::setfill(' ') << std::left << std::setw(INITIAL) << initial + "."  << "\t";
+      if (maxLenLast < LAST) {
+        std::cout << std::left << std::setw(LAST) << last  << "\t";
+      } else {
+        std::cout << std::left << std::setw(maxLenLast + 1) << last << "\t";
+      }
+      if (maxLenSalary < SALARY) {
+        std::cout << std::left << std::setw(SALARY) << salary << "\n";
+      } else {
+        std::cout << std::left << std::setw(maxLenSalary + 1) <<salary << "\n";
+      }
+    }
+    //close file
+    fileObject.close();
+  } else {
+    std::cerr << "Opening file failed\n";
   }
-  //close file
-  fileObject.close();
 }
