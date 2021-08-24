@@ -179,10 +179,10 @@ The design included the following functions:
 * detachFunction(Part B)
 
 To help complete this challenge I needed to break the overall problem down into the following main tasks: 
-* create the timers
-* create threads
-* create method to solve part A - joining
-* create method to solve part B - detaching
+* Create the timers
+* Create threads
+* Create method to solve part A - joining
+* Create method to solve part B - detaching
 
 
 #### Reflection (as well as issues, challenges & resolutions)
@@ -205,6 +205,42 @@ In the image above we can see that this time the 'detach' behavior meant that 'M
 ![image info](./screenshots/Primer8_3.png)
 
 In the image above not only 'Main thread' ended right after 'Main thread' started, but 'thread1' didn't print its 'id' instead immediately printed 'thread2'. Also 'timer1' started after 'timer2'. 
+
+### Primer 9 - carClass
+This challenge was to create a class for the object Car with private attributes and eigth public methods.
+
+The design included the following:
+* CarClass
+* Menu
+
+To help complete this challenge I needed to break the overall problem down into the following main tasks: 
+* Create Car class with its attributes, constructor, setters, getters and other related methods
+* Create Menu
+* Get data from the user
+
+#### Reflection (as well as issues, challenges & resolutions)
+Creating this primer was similar than when working with Java, at work we implemented three versions of a bank application using Java. However, when I reviewed the requierements I made some changes to the class (i.e allowed user to instantiate the object with all four values) which lead me to use 'this' (because I was using the same name of the member attributes in the setters parameters) but when I tried to reach the attribute using '.' like in Java, it gave me an error, so I tried '->' (to access properties in a structure pointed to by a pointer https://cs50.harvard.edu/x/2021/notes/5/#data-structures) and that allowed me to access the class' attribute.
+
+In this primer I reused primer7, so I added 'sleepTimer()' for two seconds to give some time for the user to read the output.
+
+### Primer 10 - areaOf
+I was not sure what was asked in the primer, so my first attempt solved the problem but not in the most flexible way. After redaing the task several times I realised that the intention here is to use inheritance, so I created a new solution from scratch.
+
+This new solution includes:
+* Abstract class Shape (Interface)
+* Circle class
+* Square class
+* Rectangle class
+* Triangle class
+* Trapezoid class
+
+To help complete this challenge I needed to break the overall problem down into the following main tasks: 
+* create the abstract class with the size() metho as a pure virtual functioon (not implemented/empty)
+* create the classes that inherit from the abstract class 'Shape'
+* create objects and instantiate them to display area of five shapes.
+
+#### Reflection (as well as issues, challenges & resolutions)
+Although, I lerant and practice a lot from implementing two solutions, the main reflection here is start coding when you are sure you understand what is been asked. One of my favorite parts of coding uisng OOP is overloading the constructors. It is also cool, to just get/set the methods/properties of an object using a '.' for example myTriangle.setBase() or myTriangle.getBase().
 
 ---
 ## Section 2 - Programming Paradigms

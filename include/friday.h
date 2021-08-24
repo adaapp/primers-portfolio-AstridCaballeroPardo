@@ -2,56 +2,68 @@
   code that feeds carClass()
 */
 
-class car {
+class Car {
   private:
     std::string colour;
     std::string make;
-    bool isEngineOn = false;    
-    bool isLocked = false;
+    bool isEngineOn;    
+    bool isLocked;
 
   public:
     //constructor
-    car() {
+    Car() {
       colour = "Blue"; 
       make = "Honda"; 
+      isEngineOn = false;    
+      isLocked = false;
       }
     //overloading the constructor
-    car(std::string colour, std::string make) {
-      set_colour(colour);
-      set_make(make);
+    Car(std::string colour, std::string make, bool isEngineOn, bool isLocked) {
+      setColour(colour);
+      setMake(make);
+      setIsEngineOn(isEngineOn);
+      setIsLocked(isLocked);
     }
 
     //destructor
-    ~car() { }
+    ~Car() { }
 
     //Class Methods
     //Setters
-    void set_colour(std::string colour) {
-      colour = colour;
+    void setColour(std::string colour) {
+      this->colour = colour;
     }
 
-    void set_make(std::string make) {
-      make = make;
+    void setMake(std::string make) {
+      this->make = make;
+    }
+
+    void setIsEngineOn(bool isEngineOn) {
+      this->isEngineOn = isEngineOn;
+    }
+
+    void setIsLocked(bool isLocked) {
+      this->isLocked = isLocked;
     }
 
     //Getters
-    std::string get_colour(void) {
+    std::string getColour(void) {
       return colour;
     }
 
-    std::string get_make(void) {
+    std::string getMake(void) {
       return make;
     }
 
-    std::string get_engine_on(void) {
+    std::string getEngineOn(void) {
       if (isEngineOn) {
-        return "On";
+        return "Running";
       } else {
         return "Off";
       }      
     }
 
-    std::string get_locked(void) {
+    std::string getLocked(void) {
       if (isLocked) {
         return "Locked";
       } else {
@@ -60,14 +72,14 @@ class car {
     }
 
     //other Methods
-    void engine_on(void) {
+    void engineOn(void) {
       if (!isEngineOn) {
         isEngineOn = true;        
       }      
     }
 
     //find this function redundant but I made it as the instrunctions say it is a MUST
-    void engine_off(void) {
+    void engineOff(void) {
       if (isEngineOn) {
         isEngineOn = false;        
       }      
@@ -82,13 +94,13 @@ class car {
     }
 
     void status (void) {
-      std::cout << "Car Status: colour: " << get_colour() << ", make: " << get_make() << ", engine: " << get_engine_on() << ", " << get_locked() << "\n";
+      std::cout << "Car Status: colour: " << getColour() << ", make: " << getMake() << ", engine: " << getEngineOn() << ", " << getLocked() << "\n";
     }
     
 };
 
 
-void menuCar(car myCar) {  
+void menuCar(Car myCar) {  
   int choiceNum = -1;
   std::string choiceStr;  
 
@@ -113,8 +125,8 @@ void menuCar(car myCar) {
     //Run actions to deliver user's choice
     switch(choiceNum) {
       case 1:
-        if (myCar.get_engine_on() == "Off") {
-          myCar.engine_on();
+        if (myCar.getEngineOn() == "Off") {
+          myCar.engineOn();
           std::cout << "Turning the engine on\n";
         } else {
           std::cout << "Sorry, the engine is already on\n";
@@ -122,8 +134,8 @@ void menuCar(car myCar) {
         break;
       
       case 2:
-        if (myCar.get_engine_on() == "On") {
-          myCar.engine_off();
+        if (myCar.getEngineOn() == "Running") {
+          myCar.engineOff();
           std::cout << "Turning the engine off\n";
         } else {
           std::cout << "Sorry, the engine is already off\n";
@@ -131,7 +143,7 @@ void menuCar(car myCar) {
         break;
 
       case 3:
-        if (myCar.get_locked() == "Unlocked") {
+        if (myCar.getLocked() == "Unlocked") {
           myCar.locked(true);
           std::cout << "Locking the car\n";
         } else {
@@ -140,7 +152,7 @@ void menuCar(car myCar) {
         break;
 
       case 4:
-      if (myCar.get_locked() == "Locked") {
+      if (myCar.getLocked() == "Locked") {
           myCar.locked(false);
           std::cout << "Unlocking the car\n";
         } else {
@@ -153,7 +165,7 @@ void menuCar(car myCar) {
         break;      
     }
     // give some time for the user to read output and reuse primer 7
-    sleepTimer(3);
+    sleepTimer(2);
 
   } while (choiceNum != 0);
 }
@@ -161,7 +173,7 @@ void menuCar(car myCar) {
 
 void carClass(void) {
   //create instance object
-  car car1 = car();    
+  Car car1 = Car();    
 
   //call menu 
   menuCar(car1);   
@@ -172,128 +184,173 @@ void carClass(void) {
   code that feeds areaOf()
 */
 
-class shape {
-  private:
-    std::string shapeName;
+//Abstract class
+class Shape {
+  protected:  
     float side = 0;
     float radious = 0;    
     float height = 0;
     float base = 0;
 
   public:
-    //constructor
-    shape(std::string shapeName, float a) {
-      set_shape(shapeName);
+  //pure virtual function - interface
+    virtual float size() = 0;    
 
-      if (get_shape() == "Circle") {        
-        set_radious(a);
-      }
-      
-      else if (get_shape() == "Square") {        
-        set_side(a);
-      }
+    //setters
+    void setRadious(float radious) {
+      this->radious = radious;    
     }
 
-    //overloading the constructor
-    shape(std::string shapeName, float a, float b){
-      set_shape(shapeName);
-
-      if (get_shape() == "Rectangle" || get_shape() == "Triangle") {        
-        set_side(a);
-        set_height(b);
-      }
+    void setSide(float side) {
+      this->side = side;    
     }
 
-    //overloading the constructor
-    shape(std::string shapeName, float a, float b, float c){
-      set_shape(shapeName);
-
-      if (get_shape() == "Trapezoid") { 
-        set_base(a);             
-        set_height(b);
-        set_side(c);        
-      }
+    void setHeight(float height) {
+      this->height = height;    
     }
 
-    //destructor
-    ~shape() { }
+    void setBase(float base) {
+      this->base = base;    
+    } 
 
-    //Setter method
-    void set_shape(std::string shape) {
-      shapeName = shape;    
-    }
-
-    void set_radious(float a) {
-      radious = a;    
-    }
-
-    void set_side(float a) {
-      side = a;    
-    }
-
-    void set_height(float b) {
-      height = b;    
-    }
-
-    void set_base(float c) {
-      base = c;    
-    }
-
-    //Getter method
-    std::string get_shape(void){
-      return shapeName;
-    }
-
-    float get_radious(void){
+    //getters
+    float getRadious(void){
       return radious;
     }
 
-    float get_side(void){
+    float getSide(void){
       return side;
     }
 
-    float get_height(void){
+    float getHeight(void){
       return height;
     }
 
-    float get_base(void){
+    float getBase(void){
       return base;
     }
+};
 
-    //Other methods
+//using inheritance
+class Circle: public Shape {
+  public:
+    //constructor
+    Circle() {       
+      }
+    //overloading the constructor
+    Circle(float radious) {
+      setRadious(radious);      
+    }
+
+    //destructor
+    ~Circle() { }
+
+    //implement size() specifically for Circle
     float size() {
-      if (get_shape() == "Circle") {
-        return  M_PIl * std::pow(get_radious(), 2.0);
+      return  M_PIl * std::pow(radious, 2.0);
+    }
+};
+
+class Square: public Shape {
+  public:
+    //constructor
+    Square() {       
       }
-      else if (get_shape() == "Square") {
-        return std::pow(get_side(), 2.0);
+    //overloading the constructor
+    Square(float side) {
+      setSide(side);      
+    }
+
+    //destructor
+    ~Square() { }
+
+    //implement size() specifically for Square
+    float size() {
+      return std::pow(side, 2.0);
+    }
+};
+
+class Rectangle: public Shape {
+  public:
+    //constructor
+    Rectangle() {       
       }
-      else if (get_shape() == "Rectangle") {
-        return get_side() * get_height();
+    //overloading the constructor
+    Rectangle(float side, float height) {
+      setSide(side);    
+      setHeight(height);    
+    }
+
+    //destructor
+    ~Rectangle() { }
+
+    //implement size() specifically for Rectangle
+    float size() {
+      return (side * height);
+    }
+};
+
+class Triangle: public Shape {
+  public:
+    //constructor
+    Triangle() {       
       }
-      else if (get_shape() == "Triangle") {
-        return (get_side() * get_height()) / 2.0;
+    //overloading the constructor
+    Triangle(float side, float height) {
+      setSide(side);    
+      setHeight(height);    
+    }
+
+    //destructor
+    ~Triangle() { }
+
+    //implement size() specifically for Triangle
+    float size() {
+      return ((side * height) / 2.0);
+    }
+};
+
+class Trapezoid: public Shape {
+  public:
+    //constructor
+    Trapezoid() {       
       }
-      else if (get_shape() == "Trapezoid") {
-        return ((get_base() + get_side()) / 2) * get_height();
-      }
-      return 0;
+    //overloading the constructor
+    Trapezoid(float base, float height, float side) {
+      setSide(side);    
+      setHeight(height);    
+      setBase(base);
+    }
+
+    //destructor
+    ~Trapezoid() { }
+
+    //implement size() specifically for Trapezoid
+    float size() {
+      return (((base + side) / 2) * height);
     }
 };
 
 void areaOf(void) {
-	shape myCircle = shape("Circle", 4.5);	
-  std::cout << "\nArea of " << myCircle.get_shape() << " (r = "<< myCircle.get_radious() << "): "<< myCircle.size() << "\n";
+  //using the default Circle's constructor
+	Circle myCircle = Circle();
+  myCircle.setRadious(4.5);
+  std::cout << "\nArea of Circle (r = "<< myCircle.getRadious() << "): "<< myCircle.size() << "\n";
 
-  shape mySquare = shape("Square", 6.1);
-  std::cout << "Area of " << mySquare.get_shape() << " (a = "<< mySquare.get_side() << "): "<< mySquare.size() << "\n";
+  //using the default Square's constructor
+  Square mySquare = Square();
+  mySquare.setSide(6.1);
+  std::cout << "Area of Square (a = "<< mySquare.getSide() << "): "<< mySquare.size() << "\n";
 
-  shape myRectangle = shape("Rectangle", 4, 5.9);
-  std::cout << "Area of " << myRectangle.get_shape() << " (w = "<< myRectangle.get_side() << ", l = " << myRectangle.get_height() << "): "<< myRectangle.size() << "\n";
+  //using the overloaded Reactangle's constructor
+  Rectangle myRectangle(4, 5.9);  
+  std::cout << "Area of Rectangle (w = "<< myRectangle.getSide() << ", l = " << myRectangle.getHeight() << "): "<< myRectangle.size() << "\n";
 
-  shape myTriangle = shape("Triangle", 8, 12);
-  std::cout << "Area of " << myTriangle.get_shape() << " (b = "<< myTriangle.get_side() << ", h = " << myTriangle.get_height() << "): "<< myTriangle.size() << "\n";
+  //using the overloaded Triangle's constructor
+  Triangle myTriangle(8,12);
+  std::cout << "Area of Triangle (b = "<< myTriangle.getSide() << ", h = " << myTriangle.getHeight() << "): "<< myTriangle.size() << "\n";
 
-  shape myTrapezoid = shape("Trapezoid", 14, 7.5, 6);
-  std::cout << "Area of " << myTrapezoid.get_shape() << " (b = "<< myTrapezoid.get_base() << ", h = " << myTrapezoid.get_height() << ", a = " << myTrapezoid.get_side() << "): "<< myTrapezoid.size() << "\n";
+  //using the overloaded Trapezoid's constructor
+  Trapezoid myTrapezoid(14, 7.5, 6);
+  std::cout << "Area of Trapezoid (b = "<< myTrapezoid.getBase() << ", h = " << myTrapezoid.getHeight() << ", a = " << myTrapezoid.getSide() << "): "<< myTrapezoid.size() << "\n";
 }
