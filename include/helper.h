@@ -2,9 +2,9 @@
 /* 
   Helper functions
 */
-std::string userInput(std::string prompt1) {
+std::string userInput(std::string prompt) {
   std::string reply = "";  
-  std::cout << prompt1;   
+  std::cout << prompt;   
   std::getline(std::cin, reply);  
   return reply;
 }

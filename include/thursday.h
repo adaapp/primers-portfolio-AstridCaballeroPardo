@@ -18,13 +18,13 @@ void timer2(int seconds) {
   std::cout << "timer2 end \n";
 }
 
-void thread_function1() {
+void threadFunction1() {
   std::cout << "thread 1: " << std::this_thread::get_id() << " started\n";
   timer1(TIME1);
   std::cout <<  "thread 1: " << std::this_thread::get_id() << " ended\n";  
 }
 
-void thread_function2() {
+void threadFunction2() {
   std::cout << "thread 2: " << std::this_thread::get_id() << " started\n";
   timer2(TIME2);
   std::cout <<  "thread 2: " << std::this_thread::get_id() << " ended\n";
@@ -32,8 +32,8 @@ void thread_function2() {
 
 void joinFunction() {
   std::cout << "Main thread: " << std::this_thread::get_id() << " started\n";
-  std::thread thread1(&thread_function1);  
-  std::thread thread2(&thread_function2);
+  std::thread thread1(&threadFunction1);  
+  std::thread thread2(&threadFunction2);
 
   thread1.join();
   thread2.join();
@@ -44,8 +44,8 @@ void joinFunction() {
 
 void detachFunction() {
   std::cout << "Main thread: " << std::this_thread::get_id() << " started\n";
-  std::thread thread1(&thread_function1);  
-  std::thread thread2(&thread_function2);
+  std::thread thread1(&threadFunction1);  
+  std::thread thread2(&threadFunction2);
 
   thread1.detach();
   thread2.detach();

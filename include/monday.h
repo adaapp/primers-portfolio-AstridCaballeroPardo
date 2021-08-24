@@ -101,7 +101,7 @@ void selfServiceCheckout(void) {
   float valueItem = 0.0;
   float subtotal = 0.0;
   float subTax = 0.0;
-  const float tax = 5.5;
+  const float TAX = 5.5;
 
   while (numberItems > 0){
     msg = msg = "Please enter a quantity for item " + std::to_string(i) + " (or 0 to finish): ";
@@ -119,7 +119,7 @@ void selfServiceCheckout(void) {
     }
   }
 
-  subTax = taxCal(subtotal, tax);
+  subTax = taxCal(subtotal, TAX);
 
   std::cout << "Thank you.\n\n"; 
   std::cout << "Subtotal: £" << roundTwoDecimal(subtotal) << "\n";  

@@ -1,43 +1,103 @@
-void phoneDirectory(void) {
-	std::string line;
-  const char COMMA = ',';
-  std::string info;
-  std::vector<std::string> match;
-  int countLine = 0;
+/*
+  functions used by phoneDirectory()
+*/
 
-	std::string text = userInput("Please enter a name or number to search: ");  
+std::string readPhoneBookInput(std::string prompt) {
+  std::string input;
+  do {
+    input = userInput(prompt);
+  } while (input.length() == 0 || ((getMatchCount(R"(\d)", input) > 0) && (getMatchCount(R"([a-zA-Z])", input) > 0)));
+  return input; 
+}
+
+void stringToLower(std::string &str) { 
+  for (size_t i = 0; i < str.size(); i++) {
+    str[i] = std::tolower(str[i]);     
+    } 
+}
+
+int countLine(std::ifstream &inputFile) {
+  std::string line;
+  int countLine = 0.0;
+
+  while (getline(inputFile, line)){
+    countLine++;
+  }
+  return countLine;
+}
+
+void storeMatchInput(std::vector<std::string> &myVector, std::ifstream &inputFile, std::string inputStr) {
+  std::string line;
+  std::string lowerLine;
+  std::string info;
+  const char COMMA = ',';  
+
+  while (getline(inputFile, line)) {
+      //make a copy of line
+      lowerLine = line; 
+      //convert copy to lower case   
+      stringToLower(lowerLine);
+      //match substring of the copy with user input    
+      if (lowerLine.find(inputStr) != std::string::npos) {  
+        //store matching line in sstream to be able to manipulate the string line   
+
+        //get information from the original 'line' that is not lower case 
+        std::stringstream sso(line);
+        // split the string with a delimiter
+        while (std::getline(sso, info, COMMA)) {  
+          //sotre name and phone in vector  
+          myVector.push_back(info);     
+        }
+      }    
+    }
+}
+
+
+void phoneDirectory(void) {
+	std::string msg;
+  std::string text;
+  std::vector<std::string> match;  
+  int countLn = 0;
+
+	msg = "Please enter a name or number to search: "; 
+  text = readPhoneBookInput(msg);  
+
+  //convert user input to lower case
+  stringToLower(text);
 
   //open file
   std::ifstream fileObject;
   fileObject.open("phoneBook.csv");    
 
-  //search in file
-  while (getline(fileObject, line)) {
-    if (line.find(text) != std::string::npos) {  
-      //store matching line in sstream to be able to manipulate the string line    
-      std::stringstream sso(line);
-      // split the string with a delimiter
-      while (std::getline(sso, info, COMMA)) {        
-        match.push_back(info);      
+  //check if the file opened succesfully
+  if (!fileObject.fail()) { 
+    //calculate the number of records in the file
+    countLn = countLine(fileObject);
+    std::cout << "Searching "<< countLn << " records … \n\n";
+
+    //Read file again
+    //https://stackoverflow.com/a/28903431
+    fileObject.clear();
+    fileObject.seekg(0);
+    
+    //search in file
+    storeMatchInput(match, fileObject, text);
+ 
+    //check if vector has information stored
+    if (match.empty()) {
+      std::cout << "Sorry, no contact details found" << "\n";
+    } else {
+      //print contact details 
+      std::cout << "Contact details:" << "\n";
+      for (int i = 0; i < (match.size()- 1); i += 2) {  
+        std::cout << match.at(i) << ", T: " << match.at(i + 1) << "\n";
       }
-    }   
-    countLine ++;
-  }
-
-  std::cout << "Searching "<< countLine << " records … \n\n";
-
-  if (match.empty()) {
-    std::cout << "Sorry, no contact details found" << "\n";
+    }    
+    //close file
+    fileObject.close();
   } else {
-    //print contact details 
-    std::cout << "Contact details:" << "\n";
-    for (int i = 0; i < (match.size()- 1); i += 2) {  
-    std::cout << match.at(i) << ", T: " << match.at(i + 1) << "\n";
-    }
-  }  
-  
-  //close file
-  fileObject.close();
+    std::cerr << "Opening file failed\n";
+  }
 }
 
 
@@ -58,6 +118,7 @@ void dataFileParser(void) {
   std::ifstream fileObject;
   fileObject.open("employee.csv");   
 
+  // calculate the max lengths of 2nd and 3rd columns
   while (getline(fileObject, line)) {
     //store line into sstream for string manipulation
     std::stringstream sso(line);
@@ -76,6 +137,7 @@ void dataFileParser(void) {
     
   } 
  
+  //display headers
   std::cout << "\n";
   std::cout << std::left << std::setw(INITIAL) << "Initial" << "\t";
   if (maxLenLast < LAST) {
@@ -89,7 +151,7 @@ void dataFileParser(void) {
     std::cout << std::left << std::setw(maxLenSalary + 1) << "Salary" << "\n";
   }
 
-
+  //display '-' under headers
   std::cout << std::setfill('-') << std::setw(INITIAL) << "-" << "\t";
   if (maxLenLast < LAST) {
     std::cout << std::setw(LAST) << "-" << "\t";
@@ -108,12 +170,13 @@ void dataFileParser(void) {
   fileObject.seekg(0);
   
 
-//loop
+  //Display each record
   while (getline(fileObject, line)) {    
     //store line into sstream for string manipulation
     std::stringstream sso(line);
           
     getline(sso, initial, COMMA); 
+    //get first letter of initial
     initial = initial.front();
     getline(sso, last, COMMA);
     getline(sso, salary, COMMA);

@@ -101,7 +101,7 @@ To help complete this challenge I needed to break the overall problem down into 
 * Store data
 * Get data from the user
 * Verify the data is in a suitable format
-* Create the method to implement the seacrh of the name
+* Create the method to implement the search of the name
 * Delete a name if there is a match
 * Display the result
 
@@ -123,18 +123,88 @@ The refactoring process also included to take the code to delete the name form t
 In this primer I was able to reuse the 'getMatchCount' function which I originally created for primer3.
 
 ### Primer 5 - phoneDirectory
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac elit in magna porttitor convallis. Ut eu justo rutrum, luctus lorem a, pretium quam. Sed ut commodo lectus. Vestibulum ut ligula lorem. Nulla mattis varius ex ac luctus. Aenean nec laoreet enim. Sed lorem erat, vestibulum ut faucibus vel, pellentesque nec felis. Vivamus metus tellus, pretium eu sodales interdum, fringilla ut mauris. ....
+This challenge requires us to read a file (external data stream) and get user input (either name or phone, not both)to match their request with the information in the file, if there is a macth return the information in a specific format.
+
+As part of the design I created the following functions:
+* readPhoneBook
+* stringToLower
+* countLine
+* storeMatchInput
+
+To help complete this challenge I needed to break the overall problem down into the following main tasks: 
+* Create container
+* Access file
+* Get data from the user
+* Verify the data is in a suitable format (either letters for the name or numbers for the phone but not both type of characters).
+* Read file and match 
+* Display the result
 
 #### Reflection (as well as issues, challenges & resolutions)
-The biggest issue was related to testing the areas my solution failed, originally, I tested to see if it worked - however, it wasn’t until I tried to break it that I found some of the more serious issues with my design and implementation.  For example, ...
+The biggest challenge I had when implementing the primer was making it case insentive, when I made the line lower case then the final display will show the information in lower case. So I created a 'lowerLine' string variable to store a copy of 'line' and do the matching using the lowercase version but using the original 'line' to store the matched line into the vector. However, I kept faling at creating the copy. After a lot of research I realised the solution was very simple, I had forgotten to write: 'lowerLine = line;'. That was silly but I was very pleased I could moved on.
+
+Another thing to take into account is that my code reads the file twice, and for that is important to clear the stream status and reset the position to the begining of the file, so when we want to read the file again from the beginning is ready to do so. This was an issue when doing the primer6 (my original solution only read the file once), so I used it here when I was refactoring and decided to do the count of lines in a different step.
+
+My validation doesn't take into account the spaces, so if the phone number for example is entered by the user without spaces it won't match, to solve this I would use regex.
 
 ### Primer 6 - dataFileParser
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac elit in magna porttitor convallis. Ut eu justo rutrum, luctus lorem a, pretium quam. Sed ut commodo lectus. Vestibulum ut ligula lorem. Nulla mattis varius ex ac luctus. Aenean nec laoreet enim. Sed lorem erat, vestibulum ut faucibus vel, pellentesque nec felis. Vivamus metus tellus, pretium eu sodales interdum, fringilla ut mauris. ....
+This challenge requires us to read a file (external data stream), the process and display the data in a specific format.
+
+To help complete this challenge I needed to break the overall problem down into the following main tasks: 
+* Access file
+* Calculate max lenght of 2nd and 3rd column
+* Display headers
+* Display '-' 
+* Display records
 
 #### Reflection (as well as issues, challenges & resolutions)
-The biggest issue was related to testing the areas my solution failed, originally, I tested to see if it worked - however, it wasn’t until I tried to break it that I found some of the more serious issues with my design and implementation.  For example, ...
+Formatting was a big challenge but once I discovered the library 'iomanip', the process was much easier and fun. I enjoyed playing with 'setfil', 'left' and 'setw'. The way I separated the columns was using tab '\t' but this needs to be revisited as it is not felxible enough.
 
-..  
+As I mentioned before, If one needs to read the file more than once it is important to clear the stream flags that tells the program that it has reached the end of the file and we reposition to the beginning of the file in order to be ready to read again. As I din't know that, my code originally printed the last line of the file in an infinite loop and in other trial and error didn't display information at all.
+
+### Primer 7 - sleepTimer
+This challenge requires us to create a function that blocks further execution based on time.
+
+#### Reflection (as well as issues, challenges & resolutions)
+To help complete this challenge I reviewed the lecture and the slides presented by the teacher. for this it was used 'this_thread::sleep_for' to allow us to access a single thread of execution and block it for a specified time.
+
+Using time was a concrete way to see the behavior of the processes which made it easier for me to understand threads.
+
+### Primer 8 - joinDetachThreads
+This challenge was divided in two parts. First part was to create threads and join them, and the sceond part was to create threads and detach them. 
+
+The design included the following functions:
+* timer1 and timer2
+* threadFunction1 and threadFunction2
+* joinFunction (Part A)
+* detachFunction(Part B)
+
+To help complete this challenge I needed to break the overall problem down into the following main tasks: 
+* create the timers
+* create threads
+* create method to solve part A - joining
+* create method to solve part B - detaching
+
+
+#### Reflection (as well as issues, challenges & resolutions)
+To solve this challenge I wanted to reuse the primer7 but as to follow the requirements I decided to create specific timers (1 and 2) instead. BUt it was basically the same code that primer7. Then from the lecture slides I created the 'threadFunctionsX' to create thread1 and thread2. Once I had the elements I needed to play with the threads I created the two functions one to join and one to detach.
+
+As expected the 'join' part of the primer waited for the threads to finish before ending joinDetachThreads(), whereas the 'detach' had an unreliable behavior.
+
+The below three screenshots, show how part A (joining) consistently displays the same result, in the same order and the last line is 'Main thread' which means that threads 1 and 2 finished and after that joinDetachThreads() ended.
+
+![image info](./screenshots/Primer8_1.png)
+
+On the other hand the image above shows 'Main thread' ended before 'timer1' ended for example.
+
+The behavior of the 'detach' part is inconsistent and unreliable because each thread gets detached from the function that called them (joinDetachThreads()) and go in separate ways. 
+
+![image info](./screenshots/Primer8_2.png)
+
+In the image above we can see that this time the 'detach' behavior meant that 'Main thread' ended right after 'Main thread' started. 
+
+![image info](./screenshots/Primer8_3.png)
+
+In the image above not only 'Main thread' ended right after 'Main thread' started, but 'thread1' didn't print its 'id' instead immediately printed 'thread2'. Also 'timer1' started after 'timer2'. 
 
 ---
 ## Section 2 - Programming Paradigms
